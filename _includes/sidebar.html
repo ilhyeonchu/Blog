@@ -171,94 +171,103 @@
 <!-- #sidebar -->
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tree = document.querySelector('.sidebar-categories');
-    if (!tree) return;
+  (() => {
+    const init = () => {
+      const tree = document.querySelector('.sidebar-categories');
+      if (!tree) return;
 
-    // fold / unfold
-    tree.querySelectorAll('[data-cat-toggle]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const target = document.getElementById(targetId);
-        if (!target) return;
-        const willHide = !target.classList.contains('d-none');
-        target.classList.toggle('d-none', willHide);
-        btn.setAttribute('aria-expanded', willHide ? 'false' : 'true');
-        const icon = btn.querySelector('i');
-        if (icon) {
-          icon.classList.toggle('fa-chevron-down', !willHide);
-          icon.classList.toggle('fa-chevron-right', willHide);
+      // fold / unfold
+      tree.querySelectorAll('[data-cat-toggle]').forEach(btn => {
+        btn.addEventListener('click', evt => {
+          evt.preventDefault();
+          const targetId = btn.getAttribute('data-target');
+          const target = document.getElementById(targetId);
+          if (!target) return;
+          const willHide = !target.classList.contains('d-none');
+          target.classList.toggle('d-none', willHide);
+          btn.setAttribute('aria-expanded', willHide ? 'false' : 'true');
+          const icon = btn.querySelector('i');
+          if (icon) {
+            icon.classList.toggle('fa-chevron-down', !willHide);
+            icon.classList.toggle('fa-chevron-right', willHide);
+          }
+        });
+      });
+
+      // simple category filter for home page post list
+      const postList = document.getElementById('post-list');
+      const filterLinks = tree.querySelectorAll('.category-filter-link');
+      const resetBtn = tree.querySelector('[data-cat-reset]');
+
+      const applyFilter = (cat, sub) => {
+        if (!postList) return;
+        const cards = postList.querySelectorAll('article.card-wrapper');
+        const hasTarget = !!(cat || sub);
+
+        cards.forEach(card => {
+          const cats = (card.dataset.categories || '').toLowerCase().split('|');
+          let match = true;
+          if (cat) match = cats[0] === cat.toLowerCase();
+          if (match && sub) match = cats[1] === sub.toLowerCase();
+          card.classList.toggle('d-none', hasTarget && !match);
+        });
+
+        if (!hasTarget) {
+          cards.forEach(card => card.classList.remove('d-none'));
         }
-      });
-    });
 
-    // simple category filter for home page post list
-    const postList = document.getElementById('post-list');
-    const filterLinks = tree.querySelectorAll('.category-filter-link');
-    const resetBtn = tree.querySelector('[data-cat-reset]');
-
-    const applyFilter = (cat, sub) => {
-      if (!postList) return;
-      const cards = postList.querySelectorAll('article.card-wrapper');
-      const hasTarget = cat || sub;
-      cards.forEach(card => {
-        const cats = (card.dataset.categories || '').toLowerCase().split('|');
-        let match = true;
-        if (cat) match = cats[0] === cat.toLowerCase();
-        if (match && sub) match = cats[1] === sub.toLowerCase();
-        card.classList.toggle('d-none', hasTarget && !match);
-      });
-
-      if (!hasTarget) {
-        cards.forEach(card => card.classList.remove('d-none'));
-      }
-
-      const params = new URLSearchParams(window.location.search);
-      if (hasTarget) {
-        params.set('category', cat || '');
-        if (sub) {
-          params.set('sub', sub);
+        const params = new URLSearchParams(window.location.search);
+        if (hasTarget) {
+          params.set('category', cat || '');
+          if (sub) {
+            params.set('sub', sub);
+          } else {
+            params.delete('sub');
+          }
         } else {
+          params.delete('category');
           params.delete('sub');
         }
-      } else {
-        params.delete('category');
-        params.delete('sub');
+        const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}${window.location.hash}`;
+        window.history.replaceState(null, '', newUrl);
+      };
+
+      const filterFromQuery = () => {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('category');
+        const sub = params.get('sub');
+        if (cat || sub) applyFilter(cat, sub);
+      };
+
+      filterLinks.forEach(link => {
+        link.addEventListener('click', evt => {
+          // keep category page navigation on category pages
+          const isHome = !!postList;
+          if (!isHome) return;
+          evt.preventDefault();
+          const cat = link.dataset.cat || '';
+          const sub = link.dataset.sub || '';
+          applyFilter(cat, sub);
+        });
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (!postList) {
+            window.location.href = '{{ "/" | relative_url }}';
+          } else {
+            applyFilter('', '');
+          }
+        });
       }
-      const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}${window.location.hash}`;
-      window.history.replaceState(null, '', newUrl);
+
+      filterFromQuery();
     };
 
-    const filterFromQuery = () => {
-      const params = new URLSearchParams(window.location.search);
-      const cat = params.get('category');
-      const sub = params.get('sub');
-      if (cat || sub) applyFilter(cat, sub);
-    };
-
-    filterLinks.forEach(link => {
-      link.addEventListener('click', evt => {
-        // keep category page navigation on category pages
-        const isHome = !!postList;
-        if (!isHome) return;
-        evt.preventDefault();
-        const cat = link.dataset.cat || '';
-        const sub = link.dataset.sub || '';
-        applyFilter(cat, sub);
-      });
-    });
-
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        if (!postList) {
-          window.location.href = '{{ "/" | relative_url }}';
-        } else {
-          applyFilter('', '');
-          postList.querySelectorAll('article.card-wrapper').forEach(card => card.classList.remove('d-none'));
-        }
-      });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
-
-    filterFromQuery();
-  });
+  })();
 </script>
