@@ -56,7 +56,10 @@
   {% assign top_categories = top_categories | sort %}
 
   <div class="sidebar-categories w-100 px-3 pb-3">
-    <div class="small text-uppercase text-muted mb-2">카테고리</div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="small text-uppercase text-muted">카테고리</span>
+      <button class="btn btn-sm btn-outline-secondary py-0 px-2" data-cat-reset type="button">전체 보기</button>
+    </div>
     <ul class="list-unstyled mb-0">
       {% for top_ctg in top_categories %}
         {% assign sub_ctgs = '' | split: '' %}
@@ -71,19 +74,28 @@
         {% endfor %}
         {% assign sub_ctgs = sub_ctgs | sort %}
 
+        {% assign top_id = top_ctg | slugify | prepend: 'cat-tree-' %}
         <li class="mb-2">
           <div class="d-flex align-items-center">
-            <i class="far fa-folder-open fa-fw me-1"></i>
+            {% if sub_ctgs.size > 0 %}
+              <button type="button" class="btn btn-sm btn-link text-decoration-none ps-0 pe-1" data-cat-toggle data-target="{{ top_id }}" aria-expanded="true">
+                <i class="fas fa-chevron-down fa-fw"></i>
+              </button>
+            {% else %}
+              <span class="ps-0 pe-1" aria-hidden="true">
+                <i class="fas fa-circle fa-2xs text-muted"></i>
+              </span>
+            {% endif %}
             {% capture _top_url %}/categories/{{ top_ctg | slugify | url_encode }}/{% endcapture %}
-            <a class="fw-semibold" href="{{ _top_url | relative_url }}">{{ top_ctg }}</a>
+            <a class="fw-semibold category-filter-link" href="{{ _top_url | relative_url }}" data-cat="{{ top_ctg }}">{{ top_ctg }}</a>
           </div>
           {% if sub_ctgs.size > 0 %}
-            <ul class="list-unstyled ps-3 mt-1">
+            <ul id="{{ top_id }}" class="list-unstyled ps-3 mt-1">
               {% for sub_ctg in sub_ctgs %}
                 {% capture _sub_url %}/categories/{{ sub_ctg | slugify | url_encode }}/{% endcapture %}
                 <li class="d-flex align-items-center mb-1">
                   <i class="far fa-folder fa-fw me-1"></i>
-                  <a href="{{ _sub_url | relative_url }}">{{ sub_ctg }}</a>
+                  <a class="category-filter-link" href="{{ _sub_url | relative_url }}" data-cat="{{ top_ctg }}" data-sub="{{ sub_ctg }}">{{ sub_ctg }}</a>
                   <span class="ms-1 text-muted small">({{ site.categories[sub_ctg] | size }})</span>
                 </li>
               {% endfor %}
@@ -157,3 +169,96 @@
   <!-- .sidebar-bottom -->
 </aside>
 <!-- #sidebar -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tree = document.querySelector('.sidebar-categories');
+    if (!tree) return;
+
+    // fold / unfold
+    tree.querySelectorAll('[data-cat-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        const willHide = !target.classList.contains('d-none');
+        target.classList.toggle('d-none', willHide);
+        btn.setAttribute('aria-expanded', willHide ? 'false' : 'true');
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-chevron-down', !willHide);
+          icon.classList.toggle('fa-chevron-right', willHide);
+        }
+      });
+    });
+
+    // simple category filter for home page post list
+    const postList = document.getElementById('post-list');
+    const filterLinks = tree.querySelectorAll('.category-filter-link');
+    const resetBtn = tree.querySelector('[data-cat-reset]');
+
+    const applyFilter = (cat, sub) => {
+      if (!postList) return;
+      const cards = postList.querySelectorAll('article.card-wrapper');
+      const hasTarget = cat || sub;
+      cards.forEach(card => {
+        const cats = (card.dataset.categories || '').toLowerCase().split('|');
+        let match = true;
+        if (cat) match = cats[0] === cat.toLowerCase();
+        if (match && sub) match = cats[1] === sub.toLowerCase();
+        card.classList.toggle('d-none', hasTarget && !match);
+      });
+
+      if (!hasTarget) {
+        cards.forEach(card => card.classList.remove('d-none'));
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      if (hasTarget) {
+        params.set('category', cat || '');
+        if (sub) {
+          params.set('sub', sub);
+        } else {
+          params.delete('sub');
+        }
+      } else {
+        params.delete('category');
+        params.delete('sub');
+      }
+      const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}${window.location.hash}`;
+      window.history.replaceState(null, '', newUrl);
+    };
+
+    const filterFromQuery = () => {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category');
+      const sub = params.get('sub');
+      if (cat || sub) applyFilter(cat, sub);
+    };
+
+    filterLinks.forEach(link => {
+      link.addEventListener('click', evt => {
+        // keep category page navigation on category pages
+        const isHome = !!postList;
+        if (!isHome) return;
+        evt.preventDefault();
+        const cat = link.dataset.cat || '';
+        const sub = link.dataset.sub || '';
+        applyFilter(cat, sub);
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (!postList) {
+          window.location.href = '{{ "/" | relative_url }}';
+        } else {
+          applyFilter('', '');
+          postList.querySelectorAll('article.card-wrapper').forEach(card => card.classList.remove('d-none'));
+        }
+      });
+    }
+
+    filterFromQuery();
+  });
+</script>
