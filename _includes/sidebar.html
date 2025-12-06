@@ -1,0 +1,159 @@
+<!-- The Side Bar (customized to show category tree) -->
+
+<aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
+  <header class="profile-wrapper">
+    <a href="{{ '/' | relative_url }}" id="avatar" class="rounded-circle">
+      {%- if site.avatar != empty and site.avatar -%}
+        {%- capture avatar_url -%}
+          {% include media-url.html src=site.avatar %}
+        {%- endcapture -%}
+        <img src="{{- avatar_url -}}" width="112" height="112" alt="avatar" onerror="this.style.display='none'">
+      {%- endif -%}
+    </a>
+
+    <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <p class="site-subtitle fst-italic mb-0">{{ site.tagline }}</p>
+  </header>
+  <!-- .profile-wrapper -->
+
+  <nav class="flex-column flex-grow-1 w-100 ps-0">
+    <ul class="nav">
+      <!-- home -->
+      <li class="nav-item{% if page.layout == 'home' %}{{ " active" }}{% endif %}">
+        <a href="{{ '/' | relative_url }}" class="nav-link">
+          <i class="fa-fw fas fa-home"></i>
+          <span>{{ site.data.locales[include.lang].tabs.home | upcase }}</span>
+        </a>
+      </li>
+      <!-- the real tabs -->
+      {% for tab in site.tabs %}
+        <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
+          <a href="{{ tab.url | relative_url }}" class="nav-link">
+            <i class="fa-fw {{ tab.icon }}"></i>
+            {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+
+            <span>{{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | upcase }}</span>
+          </a>
+        </li>
+        <!-- .nav-item -->
+      {% endfor %}
+    </ul>
+  </nav>
+
+  {%- comment -%}
+    Always-visible category tree required by BLOG.md:
+    - 1 depth: top-level category (e.g., CNU, Personal)
+    - 2 depth: sub-categories under the same first category
+  {%- endcomment -%}
+  {% assign top_categories = '' | split: '' %}
+  {% for post in site.posts %}
+    {% assign top_ctg = post.categories | first %}
+    {% if top_ctg and top_categories contains top_ctg %}
+    {% else %}
+      {% assign top_categories = top_categories | push: top_ctg %}
+    {% endif %}
+  {% endfor %}
+  {% assign top_categories = top_categories | sort %}
+
+  <div class="sidebar-categories w-100 px-3 pb-3">
+    <div class="small text-uppercase text-muted mb-2">카테고리</div>
+    <ul class="list-unstyled mb-0">
+      {% for top_ctg in top_categories %}
+        {% assign sub_ctgs = '' | split: '' %}
+        {% for post in site.posts %}
+          {% if post.categories[0] == top_ctg %}
+            {% assign sub_ctg = post.categories[1] %}
+            {% if sub_ctg and sub_ctgs contains sub_ctg %}
+            {% else %}
+              {% assign sub_ctgs = sub_ctgs | push: sub_ctg %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% assign sub_ctgs = sub_ctgs | sort %}
+
+        <li class="mb-2">
+          <div class="d-flex align-items-center">
+            <i class="far fa-folder-open fa-fw me-1"></i>
+            {% capture _top_url %}/categories/{{ top_ctg | slugify | url_encode }}/{% endcapture %}
+            <a class="fw-semibold" href="{{ _top_url | relative_url }}">{{ top_ctg }}</a>
+          </div>
+          {% if sub_ctgs.size > 0 %}
+            <ul class="list-unstyled ps-3 mt-1">
+              {% for sub_ctg in sub_ctgs %}
+                {% capture _sub_url %}/categories/{{ sub_ctg | slugify | url_encode }}/{% endcapture %}
+                <li class="d-flex align-items-center mb-1">
+                  <i class="far fa-folder fa-fw me-1"></i>
+                  <a href="{{ _sub_url | relative_url }}">{{ sub_ctg }}</a>
+                  <span class="ms-1 text-muted small">({{ site.categories[sub_ctg] | size }})</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="sidebar-bottom d-flex flex-wrap  align-items-center w-100">
+    {% unless site.theme_mode %}
+      <button type="button" class="btn btn-link nav-link" aria-label="Switch Mode" id="mode-toggle">
+        <i class="fas fa-adjust"></i>
+      </button>
+
+      {% if site.data.contact.size > 0 %}
+        <span class="icon-border"></span>
+      {% endif %}
+    {% endunless %}
+
+    {% for entry in site.data.contact %}
+      {%- assign url = null -%}
+
+      {% case entry.type %}
+        {% when 'github', 'twitter' %}
+          {%- unless site[entry.type].username -%}
+            {%- continue -%}
+          {%- endunless -%}
+          {%- capture url -%}
+            https://{{ entry.type }}.com/{{ site[entry.type].username }}
+          {%- endcapture -%}
+        {% when 'email' %}
+          {%- unless site.social.email -%}
+            {%- continue -%}
+          {%- endunless -%}
+          {%- assign email = site.social.email | split: '@' -%}
+          {%- capture url -%}
+            javascript:location.href = 'mailto:' + ['{{ email[0] }}','{{ email[1] }}'].join('@')
+          {%- endcapture -%}
+        {% when 'rss' %}
+          {% assign url = '/feed.xml' | relative_url %}
+        {% else %}
+          {% assign url = entry.url %}
+      {% endcase %}
+
+      {% if url %}
+        <a
+          href="{{ url }}"
+          aria-label="{{ entry.type }}"
+          {% assign link_types = '' %}
+
+          {% unless entry.noblank %}
+            target="_blank"
+            {% assign link_types = 'noopener noreferrer' %}
+          {% endunless %}
+
+          {% if entry.type == 'mastodon' %}
+            {% assign link_types = link_types | append: ' me' | strip %}
+          {% endif %}
+
+          {% unless link_types == empty %}
+            rel="{{ link_types }}"
+          {% endunless %}
+        >
+          <i class="{{ entry.icon }}"></i>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <!-- .sidebar-bottom -->
+</aside>
+<!-- #sidebar -->
