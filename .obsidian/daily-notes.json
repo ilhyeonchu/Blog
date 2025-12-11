@@ -1,0 +1,4 @@
+{
+  "folder": "_posts",
+  "template": "90 Template/{{categorie1}}-{{categorie2}}-{{title}}"
+}
