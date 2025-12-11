@@ -1,20 +1,24 @@
 {
   "main": {
-    "id": "00db1271106040b1",
+    "id": "47b1f362a4bb9047",
     "type": "split",
     "children": [
       {
-        "id": "44e3b3ec60386652",
+        "id": "4d32acca41c7c395",
         "type": "tabs",
         "children": [
           {
-            "id": "0132fda8fe7d6c2e",
+            "id": "c6d4a5d84440f731",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "90 Template/블로그 글 작성 템플릿.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "블로그 글 작성 템플릿"
             }
           }
         ]
@@ -23,15 +27,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "41865801e4ef1a9a",
+    "id": "0ddb0faf3c1317cc",
     "type": "split",
     "children": [
       {
-        "id": "ab2091b2e38fc353",
+        "id": "8279d1a873cf47c7",
         "type": "tabs",
         "children": [
           {
-            "id": "fc0d0ed5137ae747",
+            "id": "a545d0b149bdfb55",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -44,7 +48,7 @@
             }
           },
           {
-            "id": "c34d959aa56bcc87",
+            "id": "58b51e6eb9203ed2",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -61,7 +65,7 @@
             }
           },
           {
-            "id": "7b09bd4b65226ee5",
+            "id": "2831a6affea9e2ec",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -77,19 +81,20 @@
     "width": 300
   },
   "right": {
-    "id": "73390c91c79638a8",
+    "id": "6c25d36de763bb1a",
     "type": "split",
     "children": [
       {
-        "id": "a82aefceff566565",
+        "id": "432a655f89daa441",
         "type": "tabs",
         "children": [
           {
-            "id": "cd4863480a67f7e9",
+            "id": "6803298c616dc76f",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,24 +104,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "백링크"
+              "title": "README 의 백링크"
             }
           },
           {
-            "id": "f1593917131365f6",
+            "id": "23de75cc64b675ae",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "나가는 링크"
+              "title": "README 의 나가는 링크"
             }
           },
           {
-            "id": "a9c2bd5580ff2ebe",
+            "id": "0c3b9d25f015642c",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -131,7 +137,7 @@
             }
           },
           {
-            "id": "f78c4e7e46764207",
+            "id": "d2ed3535251f30a3",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -145,28 +151,54 @@
             }
           },
           {
-            "id": "43198cd801137506",
+            "id": "74fad53be26839e8",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "개요"
+              "title": "README 의 개요"
+            }
+          },
+          {
+            "id": "3ccf37a0e43b15e3",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          },
+          {
+            "id": "975d5ea4eb78cf12",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
             }
           }
-        ]
+        ],
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-git:Open Git source control": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false,
+      "templater-obsidian:Templater": false,
       "switcher:빠른 전환기 열기": false,
       "graph:그래프 뷰 열기": false,
       "canvas:새 캔버스 만들기": false,
@@ -176,6 +208,20 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "0132fda8fe7d6c2e",
-  "lastOpenFiles": []
+  "active": "c6d4a5d84440f731",
+  "lastOpenFiles": [
+    "_posts/무제.md",
+    "90 Template/블로그 글 작성 템플릿.md",
+    "_posts/2025-12-11.md",
+    "_posts/2025-02-23-cnu-computer-network-placeholder.md",
+    "_posts/2025-02-23-personal-cv-placeholder.md",
+    "_posts/2025-02-23-personal-algorithms-placeholder.md",
+    "_posts/2025-02-23-cnu-ood-placeholder.md",
+    "_posts/2025-02-23-cnu-cpi-placeholder.md",
+    "README.md",
+    "99 Attachment",
+    "90 Template",
+    "BLOG.md",
+    "_posts/2025-02-23-personal-cg-placeholder.md"
+  ]
 }
