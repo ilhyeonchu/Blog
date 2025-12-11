@@ -11,10 +11,14 @@
             "id": "c6d4a5d84440f731",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "그래프 뷰"
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2025-02-23-cnu-computer-network-placeholder.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2025-02-23-cnu-computer-network-placeholder"
             }
           }
         ]
