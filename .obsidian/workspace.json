@@ -11,10 +11,14 @@
             "id": "aa8d9b35613ba24b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2025-12-11.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "2025-12-11"
             }
           }
         ]
@@ -201,14 +205,15 @@
       "daily-notes:오늘의 일일 노트 열기": false,
       "templates:템플릿 삽입": false,
       "command-palette:명령어 팔레트 열기": false,
-      "bases:새 베이스 생성하기": false
+      "bases:새 베이스 생성하기": false,
+      "periodic-notes:Open today": false
     }
   },
   "active": "aa8d9b35613ba24b",
   "lastOpenFiles": [
+    "_posts/2025-12-11.md",
     "90 Template/블로그 글 작성 템플릿.md",
     "_posts/무제.md",
-    "_posts/2025-12-11.md",
     "_posts/2025-02-23-cnu-computer-network-placeholder.md",
     "_posts/2025-02-23-personal-cv-placeholder.md",
     "_posts/2025-02-23-personal-algorithms-placeholder.md",
