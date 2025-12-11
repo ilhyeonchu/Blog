@@ -25,3 +25,17 @@ package-lock.json
 # Misc
 _sass/vendors
 assets/js/dist
+
+# OS / 기타 잡파일
+.DS_Store
+Thumbs.db
+
+# Obsidian 워크스페이스(기기별 레이아웃)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace.json.backup
+.obsidian/workspace-*.json
+
+# Obsidian 플러그인 로컬 상태/캐시
+.obsidian/plugins/**/data.json
+.obsidian/plugins/**/data.json.backup
